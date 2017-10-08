@@ -1,0 +1,51 @@
+pragma solidity ^0.4.0;
+ 
+contract transferOfOwnership {
+   
+    uint amountDeposit;
+    uint totalBalance;
+    //address public owner;
+    address owner = 0xca35b7d915458ef540ade6068dfe2f44e8fa733c;
+    address client;
+   
+    //mapping (address => uint) public money;
+    string wordOwner = "You are the OWNER!";  
+    bool public _owenership = false;
+   
+    
+    function transferOfOwnership() {
+        owner = msg.sender;
+    }
+   
+    function recieveFunds() payable{
+      
+  }
+  
+    modifier ifOwner() {
+        if(owner != msg.sender){
+            throw;
+        }
+        else{
+        _;
+        }
+   }
+  
+    function depositFunds(uint amountDeposit) returns(string){                                      //ifOwner returns(uint){
+        if(client.send(amountDeposit)){                                                             //if(msg.value >= 100){
+            _owenership = true;
+                    //totoalBalance += depositFunds;
+                    //return this.balance;
+                    return "Congrats!. You are the NEW OWNER!!!";
+            }   else{
+               
+            _owenership = false;
+                    //return this.balance;
+                    //return "You need more money to become an owner!";
+        }
+    }
+   
+    function whoisOwner() constant returns(string){
+        return wordOwner;
+    }
+   
+  }
