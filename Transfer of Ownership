@@ -1,51 +1,38 @@
 pragma solidity ^0.4.0;
  
-contract transferOfOwnership {
+contract Invoice {
+
+    uint public amountRequired;
+    address owner;
+
+    mapping(address => uint) amountPaid;
+
+    event DepositMade(address _who, uint _amount, uint _timestamp);
+    event ContractorPaid(address _who, uint _amount, uint _timestamp);
    
-    uint amountDeposit;
-    uint totalBalance;
-    //address public owner;
-    address owner = 0xca35b7d915458ef540ade6068dfe2f44e8fa733c;
-    address client;
-   
-    //mapping (address => uint) public money;
-    string wordOwner = "You are the OWNER!";  
-    bool public _owenership = false;
-   
-    
-    function transferOfOwnership() {
+    function Invoice(uint _amountRequired) {
         owner = msg.sender;
+        amountRequired = _amountRequired;
     }
    
-    function recieveFunds() payable{
-      
-  }
+    function recieveFunds() payable returns (bool success){
+      require(msg.value == amountRequired);
+      amountPaid[msg.sender] += msg.value;
+      DepositMade(msg.sender, msg.value, now);
+      return true;
+    }
   
-    modifier ifOwner() {
-        if(owner != msg.sender){
-            throw;
-        }
-        else{
-        _;
-        }
-   }
   
-    function depositFunds(uint amountDeposit) returns(string){                                      //ifOwner returns(uint){
-        if(client.send(amountDeposit)){                                                             //if(msg.value >= 100){
-            _owenership = true;
-                    //totoalBalance += depositFunds;
-                    //return this.balance;
-                    return "Congrats!. You are the NEW OWNER!!!";
-            }   else{
-               
-            _owenership = false;
-                    //return this.balance;
-                    //return "You need more money to become an owner!";
-        }
+    function payContractor(address _who, uint _amountToSend) returns (bool success){
+        require(msg.sender == owner);                                     
+        _who.transfer(_amountToSend);
+    }
+    
+    function queryBalance(address _who) constant returns (uint _amount) {
+        return amountPaid[_who];
     }
    
-    function whoisOwner() constant returns(string){
-        return wordOwner;
-    }
-   
+    function getBalance() constant returns (uint _amount){
+        return this.balance;
+    } 
   }
